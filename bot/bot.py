@@ -86,10 +86,16 @@ def pull_player_list():
     text = pull.text
     player_list = ''
 
-    num_players : int = text.count('sponsored')
-    for i in range(num_players):
-        text = text[text.index('sponsored') + len('sponsored')::]
-        player_list += '> * ' + text[text.index('>')+1:text.index('<')] + '\n'
+    text = text[text.index('id=\"players-list\"')::]
+    text = text[text.index('<span>')::]
+    text = text[:text.index('</pre>'):]
+
+    for line in text.splitlines():
+        player_list += '> * ' + get_name_between_spans(line) + '\n'
+    
+    # print(text)
+
+    
     return player_list
 
 def get_global_from_config(config_string):
@@ -98,6 +104,13 @@ def get_global_from_config(config_string):
     global_element = global_element[global_element.index(':') + 2:global_element.index('\n'):]
 
     return global_element
+
+def get_name_between_spans(string):
+    string = string[string.index('>')+1::]
+    string = string[string.index('>')+1::]
+    string = string[:string.index('<'):]
+
+    return string
 
 def on_save_timer():
     pass # process run save-all

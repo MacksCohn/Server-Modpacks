@@ -1,2 +1,1 @@
 echo TEST BITCHHH
-pause
