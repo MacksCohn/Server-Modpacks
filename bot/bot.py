@@ -4,11 +4,13 @@ import os
 import discord
 from dotenv import load_dotenv
 
+import requests
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client(intents=discord.Intents.default())
-server = None
+SERVER_CHECK_URL = 'https://mcstatus.io/status/java/108.49.248.157:25565'
 
 @client.event
 async def on_ready():
@@ -16,9 +18,9 @@ async def on_ready():
 
 
 async def on_status_button(interaction : discord.Interaction):
-    status_string : str = await pull_status()
+    status_string : str = pull_status()
     channel = discord.utils.get(client.get_all_channels(), name='bot-stuff')
-    print (str(channel))
+    await interaction.response.edit_message(content='The server is currently: ' + status_string)
 
 @client.event
 async def on_message(message):
@@ -32,8 +34,17 @@ async def on_message(message):
         view.add_item(test_button)
         await message.channel.send("TEST BUTTON", view=view)
         
-async def pull_status():
-    pass
+def pull_status():
+    pull = requests.get(SERVER_CHECK_URL)
+    text = pull.text
+    from_status = text[text.index('Status</span>'):text.index('Status</span>') + 200:]
+    first_bracket = from_status[from_status.index('>')+1::]
+    second_bracket = first_bracket[first_bracket.index('>')+1::]
+    third_bracket = second_bracket[second_bracket.index('>')+1::]
+    final_string = third_bracket[:third_bracket.index('<'):]
+    #print(from_status)
+    return final_string
+    
     
 
 client.run(TOKEN)
