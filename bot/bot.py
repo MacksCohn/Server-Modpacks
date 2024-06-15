@@ -31,7 +31,7 @@ async def on_status_button(interaction : discord.Interaction):
     if status_string == 'Online':
         emoji = ':white_check_mark: '
     else:
-        emoji = ':red_square: '
+        emoji = ':octagonal_sign: '
     await interaction.response.edit_message(content='Server Status Bot\nThe server is currently: ' + emoji + status_string)
 
 @client.event
