@@ -5,6 +5,7 @@ import discord
 from dotenv import load_dotenv
 
 import requests
+import time, threading
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -21,7 +22,8 @@ async def on_ready():
     
     global BATCH_PATH
     BATCH_PATH = get_global_from_config('bat_file')
-    print(BATCH_PATH)
+    
+    threading.Timer(600, on_save_timer).start()
 
     await channel.purge()
     await send_prompt(channel)
@@ -96,5 +98,8 @@ def get_global_from_config(config_string):
     global_element = global_element[global_element.index(':') + 2:global_element.index('\n'):]
 
     return global_element
+
+def on_save_timer():
+    pass # process run save-all
 
 client.run(TOKEN)
