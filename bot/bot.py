@@ -36,7 +36,9 @@ async def on_message(message):
     if str(message.channel) == 'bot-stuff':
         print("BEEP BOOP MESSAGE DETECTED")
         if '/' in message.content and message.author.hasPermission('ADMINISTRATOR'):
-            server_command(message.content[message.content.index('/'):message.content.index('\n'):])
+            command = message.content[message.content.index('/'):message.content.index('\n'):]
+            print(command)
+            server_command(command)
         await message.channel.purge()
         await send_prompt(message.channel)
 
