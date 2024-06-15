@@ -17,11 +17,8 @@ async def on_ready():
     print(f'{client.user} has connected to Discord!')
     channel = discord.utils.get(client.get_all_channels(), name='bot-stuff')
     
-    view = discord.ui.View()
-    test_button = discord.ui.Button(label='Status', custom_id='status-id', style=discord.ButtonStyle.blurple)
-    test_button.callback = on_status_button
-    view.add_item(test_button)
-    await channel.send("Server Status Bot", view=view)
+    await channel.purge()
+    await send_prompt(channel)
 
 
 async def on_status_button(interaction : discord.Interaction):
@@ -32,7 +29,9 @@ async def on_status_button(interaction : discord.Interaction):
         emoji = ':white_check_mark: '
     else:
         emoji = ':octagonal_sign: '
-    await interaction.response.edit_message(content='Server Status Bot\nThe server is currently: ' + emoji + status_string)
+    text = '# Server Status Bot\n> ## The server is currently: \n> ' + emoji + ' **' + status_string + '**'
+    text += '\n> ### **Players Online**: \n> ' + pull_player_list() + '\n'
+    await interaction.response.edit_message(content=text, )
 
 @client.event
 async def on_message(message):
@@ -40,11 +39,8 @@ async def on_message(message):
         return
     if str(message.channel) == 'bot-stuff':
         print("BEEP BOOP MESSAGE DETECTED")
-        view = discord.ui.View()
-        test_button = discord.ui.Button(label='Status', custom_id='status-id', style=discord.ButtonStyle.blurple)
-        test_button.callback = on_status_button
-        view.add_item(test_button)
-        await message.channel.send("TEST BUTTON", view=view)
+        await message.channel.purge()
+        await send_prompt(message.channel)
         
 def pull_status():
     pull = requests.get(SERVER_CHECK_URL)
@@ -56,7 +52,29 @@ def pull_status():
     final_string = third_bracket[:third_bracket.index('<'):]
     #print(from_status)
     return final_string
+
+def pull_player_list():
+    pull = requests.get(SERVER_CHECK_URL)
+    text = pull.text
+    player_list = ''
+
+    num_players : int = text.count('sponsored')
+    for i in range(num_players):
+        text = text[text.index('sponsored') + len('sponsored')::]
+        player_list += '* ' + text[text.index('>')+1:text.index('<')] + '\n'
+    return player_list
+
     
     
+async def send_prompt(channel):
+    view = discord.ui.View()
+    
+    status_button = discord.ui.Button(label='Status', custom_id='status-id', style=discord.ButtonStyle.blurple)
+    status_button.callback = on_status_button
+    view.add_item(status_button)
+
+    
+    
+    await channel.send(content="# Server Status Bot", view=view)
 
 client.run(TOKEN)
