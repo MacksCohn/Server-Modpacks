@@ -24,6 +24,7 @@ async def on_ready():
     BATCH_PATH = get_global_from_config('bat_file')
     
     threading.Timer(600, on_save_timer).start()
+    on_save_timer()
 
     await channel.purge()
     await send_prompt(channel)
@@ -86,12 +87,17 @@ def pull_player_list():
     text = pull.text
     player_list = ''
 
-    text = text[text.index('id=\"players-list\"')::]
-    text = text[text.index('<span>')::]
-    text = text[:text.index('</pre>'):]
+    if 'sponsored' in text:
+        for i in range(text.count('sponsored')):
+            text = text[text.index('sponsored') + len('sponsored')::]
+            player_list += '> * ' + text[text.index('>') + 1:text.index('<'):] + '\n'
+    else:
+        text = text[text.index('<div class="hidden" id="players-list">')::]
+        text = text[text.index('<span>')::]
+        text = text[:text.index('</pre>'):]
 
-    for line in text.splitlines():
-        player_list += '> * ' + get_name_between_spans(line) + '\n'
+        for line in text.splitlines():
+            player_list += '> * ' + get_name_between_spans(line) + '\n'
     
     # print(text)
 
@@ -106,13 +112,17 @@ def get_global_from_config(config_string):
     return global_element
 
 def get_name_between_spans(string):
+    original_string = string
     string = string[string.index('>')+1::]
     string = string[string.index('>')+1::]
     string = string[:string.index('<'):]
 
     return string
 
+def server_command(cmd):
+    os.system('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
+
 def on_save_timer():
-    pass # process run save-all
+    server_command('save-all')
 
 client.run(TOKEN)
