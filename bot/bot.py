@@ -17,14 +17,10 @@ async def on_ready():
     channel = discord.utils.get(client.get_all_channels(), name='bot-stuff')
     
     global SERVER_CHECK_URL
-    SERVER_CHECK_URL = open('bot.config').read()
-    SERVER_CHECK_URL = SERVER_CHECK_URL[SERVER_CHECK_URL.index('server_check_url: ')::]
-    SERVER_CHECK_URL = SERVER_CHECK_URL[SERVER_CHECK_URL.index(':') + 2:SERVER_CHECK_URL.index('\n'):]
+    SERVER_CHECK_URL = get_global_from_config('server_check_url')
     
     global BATCH_PATH
-    BATCH_PATH = open('bot.config').read()
-    BATCH_PATH = BATCH_PATH[BATCH_PATH.index('bat_file: ')::]
-    BATCH_PATH = BATCH_PATH[BATCH_PATH.index(':') + 2:BATCH_PATH.index('\n'):]
+    BATCH_PATH = get_global_from_config('bat_file')
     print(BATCH_PATH)
 
     await channel.purge()
@@ -38,28 +34,6 @@ async def on_message(message):
         print("BEEP BOOP MESSAGE DETECTED")
         await message.channel.purge()
         await send_prompt(message.channel)
-        
-def pull_status():
-    pull = requests.get(SERVER_CHECK_URL)
-    text = pull.text
-    from_status = text[text.index('Status</span>'):text.index('Status</span>') + 200:]
-    first_bracket = from_status[from_status.index('>')+1::]     
-    second_bracket = first_bracket[first_bracket.index('>')+1::]
-    third_bracket = second_bracket[second_bracket.index('>')+1::]
-    final_string = third_bracket[:third_bracket.index('<'):]
-    #print(from_status)
-    return final_string
-
-def pull_player_list():
-    pull = requests.get(SERVER_CHECK_URL)
-    text = pull.text
-    player_list = ''
-
-    num_players : int = text.count('sponsored')
-    for i in range(num_players):
-        text = text[text.index('sponsored') + len('sponsored')::]
-        player_list += '> * ' + text[text.index('>')+1:text.index('<')] + '\n'
-    return player_list
 
     
     
@@ -93,5 +67,34 @@ async def on_start_button(interaction : discord.Interaction):
     os.system(BATCH_PATH)
     print(BATCH_PATH)
 
+# Sync functions
+def pull_status():
+    pull = requests.get(SERVER_CHECK_URL)
+    text = pull.text
+    from_status = text[text.index('Status</span>'):text.index('Status</span>') + 200:]
+    first_bracket = from_status[from_status.index('>')+1::]     
+    second_bracket = first_bracket[first_bracket.index('>')+1::]
+    third_bracket = second_bracket[second_bracket.index('>')+1::]
+    final_string = third_bracket[:third_bracket.index('<'):]
+    #print(from_status)
+    return final_string
+
+def pull_player_list():
+    pull = requests.get(SERVER_CHECK_URL)
+    text = pull.text
+    player_list = ''
+
+    num_players : int = text.count('sponsored')
+    for i in range(num_players):
+        text = text[text.index('sponsored') + len('sponsored')::]
+        player_list += '> * ' + text[text.index('>')+1:text.index('<')] + '\n'
+    return player_list
+
+def get_global_from_config(config_string):
+    global_element = open('bot.config').read()
+    global_element = global_element[global_element.index(config_string+': ')::]
+    global_element = global_element[global_element.index(':') + 2:global_element.index('\n'):]
+
+    return global_element
 
 client.run(TOKEN)
