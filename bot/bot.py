@@ -15,12 +15,24 @@ SERVER_CHECK_URL = 'https://mcstatus.io/status/java/108.49.248.157:25565'
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
+    channel = discord.utils.get(client.get_all_channels(), name='bot-stuff')
+    
+    view = discord.ui.View()
+    test_button = discord.ui.Button(label='Status', custom_id='status-id', style=discord.ButtonStyle.blurple)
+    test_button.callback = on_status_button
+    view.add_item(test_button)
+    await channel.send("Server Status Bot", view=view)
 
 
 async def on_status_button(interaction : discord.Interaction):
     status_string : str = pull_status()
-    channel = discord.utils.get(client.get_all_channels(), name='bot-stuff')
-    await interaction.response.edit_message(content='The server is currently: ' + status_string)
+    emoji = ''
+    # channel = discord.utils.get(client.get_all_channels(), name='bot-stuff')
+    if status_string == 'Online':
+        emoji = ':white_check_mark: '
+    else:
+        emoji = ':red_square: '
+    await interaction.response.edit_message(content='Server Status Bot\nThe server is currently: ' + emoji + status_string)
 
 @client.event
 async def on_message(message):
