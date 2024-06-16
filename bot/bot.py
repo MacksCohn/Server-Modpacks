@@ -86,7 +86,8 @@ async def on_status_button(interaction : discord.Interaction):
 
 async def on_screenshot_button(interaction : discord.Interaction):
     time.sleep(0.5)
-    screenshot = ImageGrab.grab()
+    print(ImageGrab.backends())
+    screenshot = ImageGrab.grab(backend='pyqt5', childprocess=False)
     screenshot.save('screenshot.png')
     screenshot.close()
     await interaction.channel.send(file=discord.File('screenshot.png'))
