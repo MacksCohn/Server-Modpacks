@@ -45,7 +45,7 @@ async def on_message(message):
             print("Sending command: " + str(command))
             server_command(command)
             time.sleep(0.5)
-            screenshot = ImageGrab.grab(backend='scrot')
+            screenshot = ImageGrab.grab()
             screenshot.save('screenshot.png')
             screenshot.close()
             await message.channel.send(file=discord.File('screenshot.png'))
