@@ -44,11 +44,6 @@ async def on_message(message):
             command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
             server_command(command)
-            time.sleep(0.5)
-            screenshot = ImageGrab.grab(backend='pil', childprocess=False)
-            screenshot.save('screenshot.png')
-            screenshot.close()
-            await message.channel.send(file=discord.File('screenshot.png'))
         await message.channel.purge()
         await send_prompt(message.channel)
 
@@ -85,12 +80,7 @@ async def on_status_button(interaction : discord.Interaction):
     await interaction.response.edit_message(content=text, )
 
 async def on_screenshot_button(interaction : discord.Interaction):
-    time.sleep(0.5)
-    print(ImageGrab.backends())
-    screenshot = ImageGrab.grab(backend='pyqt5', childprocess=False)
-    screenshot.save('screenshot.png')
-    screenshot.close()
-    await interaction.channel.send(file=discord.File('screenshot.png'))
+    pass
 
 async def on_start_button(interaction : discord.Interaction):
     os.system(BATCH_PATH)
