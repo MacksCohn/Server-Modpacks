@@ -48,11 +48,11 @@ async def on_message(message):
             time.sleep(0.2)
             output = open(SERVER_LOGS_PATH + 'latest.log').read()
             output = output[output.rindex('[')::]
-        if output:
             await message.channel.purge(limit=1)
             await message.channel.send('```' + output + '```')
-        else:
+        if message.content == 'clear':
             await message.channel.purge()
+            await send_prompt(message.channel)
 
     
     
