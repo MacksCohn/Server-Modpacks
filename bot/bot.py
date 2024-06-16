@@ -10,7 +10,9 @@ import time, threading
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client(intents=discord.Intents.default())
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
@@ -35,9 +37,8 @@ async def on_message(message):
         return
     if str(message.channel) == 'bot-stuff':
         print("BEEP BOOP MESSAGE DETECTED")
-        if '/' in message.content and 'Owner' in message.author.roles:
+        if ('/' in message.content) and (message.author.id == 463869439255904257):
             command = message.content[message.content.index('/')::]
-            command = command[:message.content.index('\n'):]
             print("Sending command: " + str(command))
             server_command(command)
         await message.channel.purge()
