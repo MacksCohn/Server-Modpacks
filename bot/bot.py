@@ -60,9 +60,9 @@ async def send_prompt(channel):
     status_button.callback = on_status_button
     view.add_item(status_button)
 
-    screenshot_button = discord.ui.Button(label='Get terminal', custom_id='terminal-id', style=discord.ButtonStyle.secondary)
-    screenshot_button.callback = on_screenshot_button
-    view.add_item(screenshot_button)
+    logs_button = discord.ui.Button(label='Get logs', custom_id='terminal-id', style=discord.ButtonStyle.secondary)
+    logs_button.callback = on_logs_button
+    view.add_item(logs_button)
 
     start_button = discord.ui.Button(label='Start Server', custom_id='start-id', style=discord.ButtonStyle.success)
     start_button.callback = on_start_button
@@ -83,8 +83,15 @@ async def on_status_button(interaction : discord.Interaction):
     text += '\n> ### **Players Online**: \n' + pull_player_list() + '\n'
     await interaction.response.edit_message(content=text, )
 
-async def on_screenshot_button(interaction : discord.Interaction):
-    pass
+async def on_logs_button(interaction : discord.Interaction):
+    output = open(SERVER_LOGS_PATH + 'latest.log').read()
+    send = ''
+    output = output.splitlines()
+    output = output[::-1]
+    output = output[0:10:-1]
+    for line in output:
+        send += line
+    interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
     os.system(BATCH_PATH)
