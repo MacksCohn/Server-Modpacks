@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 import requests
 import time, threading
 
+import pyscreenshot as ImageGrab
+import time
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -25,7 +28,7 @@ async def on_ready():
     global BATCH_PATH
     BATCH_PATH = get_global_from_config('bat_file')
     
-    threading.Timer(600, on_save_timer).start()
+    threading.Timer(60 * 20, on_save_timer).start()
     on_save_timer()
 
     await channel.purge()
@@ -41,6 +44,11 @@ async def on_message(message):
             command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
             server_command(command)
+            time.sleep(0.5)
+            screenshot = ImageGrab.grab()
+            screenshot.save('screenshot.png')
+            screenshot.close()
+            await message.channel.send(file=discord.File('screenshot.png'))
         await message.channel.purge()
         await send_prompt(message.channel)
 
@@ -52,6 +60,10 @@ async def send_prompt(channel):
     status_button = discord.ui.Button(label='Status', custom_id='status-id', style=discord.ButtonStyle.blurple)
     status_button.callback = on_status_button
     view.add_item(status_button)
+
+    screenshot_button = discord.ui.Button(label='Get terminal', custom_id='terminal-id', style=discord.ButtonStyle.secondary)
+    screenshot_button.callback = on_screenshot_button
+    view.add_item(screenshot_button)
 
     start_button = discord.ui.Button(label='Start Server', custom_id='start-id', style=discord.ButtonStyle.success)
     start_button.callback = on_start_button
@@ -71,6 +83,13 @@ async def on_status_button(interaction : discord.Interaction):
     text = '# Server Status Bot\n> ## The server is currently: \n> ' + emoji + ' **' + status_string + '**'
     text += '\n> ### **Players Online**: \n' + pull_player_list() + '\n'
     await interaction.response.edit_message(content=text, )
+
+async def on_screenshot_button(interaction : discord.Interaction):
+    time.sleep(0.5)
+    screenshot = ImageGrab.grab()
+    screenshot.save('screenshot.png')
+    screenshot.close()
+    await interaction.channel.send(file=discord.File('screenshot.png'))
 
 async def on_start_button(interaction : discord.Interaction):
     os.system(BATCH_PATH)
