@@ -91,7 +91,7 @@ async def on_logs_button(interaction : discord.Interaction):
     output = output[0:10:-1]
     for line in output:
         send += line
-    interaction.response.send_message(send)
+    await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
     os.system(BATCH_PATH)
