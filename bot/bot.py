@@ -7,8 +7,7 @@ from dotenv import load_dotenv
 import requests
 import time, threading
 
-import pyscreenshot as ImageGrab
-import time
+import subprocess
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -43,9 +42,10 @@ async def on_message(message):
         if ('/' in message.content) and (message.author.id == 463869439255904257):
             command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
-            server_command(command)
+            output = server_command(command)
         await message.channel.purge()
         await send_prompt(message.channel)
+        await message.channel.send(output)
 
     
     
@@ -136,7 +136,9 @@ def get_name_between_spans(string):
     return string
 
 def server_command(cmd):
-    os.system('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
+    output = subprocess.check_output('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
+    return output
+    # os.system('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
 
 def on_save_timer():
     server_command('save-all')
