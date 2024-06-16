@@ -96,6 +96,8 @@ async def on_logs_button(interaction : discord.Interaction):
     for line in output:
         send += line + '\n'
     send += '```'
+    await interaction.channel.purge()
+    await send_prompt(interaction.channel)
     await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
