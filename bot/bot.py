@@ -98,11 +98,12 @@ async def on_logs_button(interaction : discord.Interaction):
     output = output[::-1]
     for line in output:
         send += line + '\n'
+    send = send[-350::]
     send += '```'
     await interaction.channel.purge()
     await send_prompt(interaction.channel)
     time.sleep(0.2)
-    await interaction.response.send_message(send[-350::])
+    await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
     if discord.Interaction.user.id == 463869439255904257:
