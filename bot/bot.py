@@ -44,6 +44,7 @@ async def on_message(message):
         return
     if str(message.channel) == 'bot-stuff':
         print("BEEP BOOP MESSAGE DETECTED")
+        print('message author id: ' + str(message.author.id))
         if ('/' in message.content) and (message.author.id == 463869439255904257):
             command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
@@ -106,7 +107,7 @@ async def on_logs_button(interaction : discord.Interaction):
     await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
-    if discord.Interaction.user.id == 463869439255904257:
+    if interaction.user.id == 463869439255904257 or interaction.user.id == :
         os.chdir(SERVER_DIRECTORY_PATH)
         os.system(BATCH_PATH)
         print(BATCH_PATH)
