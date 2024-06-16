@@ -110,6 +110,7 @@ async def on_start_button(interaction : discord.Interaction):
     if interaction.user.id == 463869439255904257 or interaction.user.id == 767538898737037362:
         os.chdir(SERVER_DIRECTORY_PATH)
         os.system(BATCH_PATH)
+        interaction.response.is_done=True
         print(BATCH_PATH)
 
 # Sync functions
