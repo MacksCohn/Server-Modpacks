@@ -47,7 +47,7 @@ async def on_message(message):
     
     
 async def send_prompt(channel):
-    view = discord.ui.View()
+    view = discord.ui.View(timeout=None)
     
     status_button = discord.ui.Button(label='Status', custom_id='status-id', style=discord.ButtonStyle.blurple)
     status_button.callback = on_status_button
