@@ -45,7 +45,6 @@ async def on_message(message):
             command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
             server_command(command)
-            time.sleep(0.2)
             output = open(SERVER_LOGS_PATH + 'latest.log').read()
             output = output[output.rindex('[')::]
         await message.channel.purge()
