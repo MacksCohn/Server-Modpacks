@@ -48,7 +48,10 @@ async def on_message(message):
             time.sleep(0.2)
             output = open(SERVER_LOGS_PATH + 'latest.log').read()
             output = output[output.rindex('[')::]
-        await message.channel.purge(limit=1)
+        if output:
+            await message.channel.purge(limit=1)
+        else:
+            await message.channel.purge()
         await message.channel.send('```' + output + '```')
 
     
