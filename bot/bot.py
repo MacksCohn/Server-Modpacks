@@ -107,7 +107,7 @@ async def on_logs_button(interaction : discord.Interaction):
     await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
-    if interaction.user.id == 463869439255904257 or interaction.user.id == :
+    if interaction.user.id == 463869439255904257 or interaction.user.id == 2:
         os.chdir(SERVER_DIRECTORY_PATH)
         os.system(BATCH_PATH)
         print(BATCH_PATH)
