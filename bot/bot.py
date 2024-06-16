@@ -99,7 +99,7 @@ async def on_logs_button(interaction : discord.Interaction):
     for line in output:
         send += line + '\n'
     send = send[-350::]
-    send += '```'
+    send = '```' + send + '```'
     await interaction.channel.purge()
     await send_prompt(interaction.channel)
     time.sleep(0.2)
