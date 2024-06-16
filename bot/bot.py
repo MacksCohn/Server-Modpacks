@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 import requests
 import time, threading
 
-import subprocess
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -26,6 +25,9 @@ async def on_ready():
     
     global BATCH_PATH
     BATCH_PATH = get_global_from_config('bat_file')
+
+    global SERVER_LOGS_PATH
+    SERVER_LOGS_PATH = get_global_from_config('server_logs_path')
     
     threading.Timer(60 * 20, on_save_timer).start()
     on_save_timer()
@@ -42,10 +44,13 @@ async def on_message(message):
         if ('/' in message.content) and (message.author.id == 463869439255904257):
             command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
-            output = server_command(command)
+            server_command(command)
+            time.sleep(0.2)
+            output = open(SERVER_LOGS_PATH + 'latest.log').read()
+            output = output[output.rindex(command)::]
         await message.channel.purge()
         await send_prompt(message.channel)
-        await message.channel.send(output)
+        await message.channel.send('```' + output + '```')
 
     
     
@@ -136,10 +141,7 @@ def get_name_between_spans(string):
     return string
 
 def server_command(cmd):
-    output = subprocess.check_output('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd), shell=True, text=True)
-    print(output)
-    return output
-    # os.system('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
+    os.system('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
 
 def on_save_timer():
     server_command('save-all')
