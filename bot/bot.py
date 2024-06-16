@@ -38,7 +38,7 @@ async def on_message(message):
     if str(message.channel) == 'bot-stuff':
         print("BEEP BOOP MESSAGE DETECTED")
         if ('/' in message.content) and (message.author.id == 463869439255904257):
-            command = message.content[message.content.index('/')::]
+            command = message.content[message.content.index('/')+1::]
             print("Sending command: " + str(command))
             server_command(command)
         await message.channel.purge()
