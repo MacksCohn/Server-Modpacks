@@ -50,9 +50,9 @@ async def on_message(message):
             output = output[output.rindex('[')::]
         if output:
             await message.channel.purge(limit=1)
+            await message.channel.send('```' + output + '```')
         else:
             await message.channel.purge()
-        await message.channel.send('```' + output + '```')
 
     
     
