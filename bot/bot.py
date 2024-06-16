@@ -102,12 +102,13 @@ async def on_logs_button(interaction : discord.Interaction):
     await interaction.channel.purge()
     await send_prompt(interaction.channel)
     time.sleep(0.2)
-    await interaction.response.send_message(send)
+    await interaction.response.send_message(send[-350::])
 
 async def on_start_button(interaction : discord.Interaction):
-    os.chdir(SERVER_DIRECTORY_PATH)
-    os.system(BATCH_PATH)
-    print(BATCH_PATH)
+    if discord.Interaction.user.id == 463869439255904257:
+        os.chdir(SERVER_DIRECTORY_PATH)
+        os.system(BATCH_PATH)
+        print(BATCH_PATH)
 
 # Sync functions
 def pull_status():
