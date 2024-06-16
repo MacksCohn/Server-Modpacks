@@ -85,12 +85,14 @@ async def on_status_button(interaction : discord.Interaction):
 
 async def on_logs_button(interaction : discord.Interaction):
     output = open(SERVER_LOGS_PATH + 'latest.log').read()
-    send = ''
+    send = '```'
     output = output.splitlines()
     output = output[::-1]
-    output = output[0:10:-1]
+    output = output[0:10:]
+    output = output[::-1]
     for line in output:
-        send += line
+        send += line + '\n'
+    send += '```'
     await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
