@@ -50,7 +50,7 @@ async def on_message(message):
             output = output[output.rindex('[')::]
             await message.channel.purge(limit=1)
             await message.channel.send('```' + output + '```')
-        if message.content == 'clear':
+        if message.content.lower() == 'clear':
             await message.channel.purge()
             await send_prompt(message.channel)
 
