@@ -28,6 +28,9 @@ async def on_ready():
 
     global SERVER_LOGS_PATH
     SERVER_LOGS_PATH = get_global_from_config('server_logs_path')
+
+    global SERVER_DIRECTORY_PATH
+    SERVER_DIRECTORY_PATH = get_global_from_config('server_directory_path')
     
     threading.Timer(60 * 20, on_save_timer).start()
     on_save_timer()
@@ -102,6 +105,7 @@ async def on_logs_button(interaction : discord.Interaction):
     await interaction.response.send_message(send)
 
 async def on_start_button(interaction : discord.Interaction):
+    os.chdir(SERVER_DIRECTORY_PATH)
     os.system(BATCH_PATH)
     print(BATCH_PATH)
 
@@ -126,7 +130,7 @@ def pull_player_list():
         for i in range(text.count('sponsored')):
             text = text[text.index('sponsored') + len('sponsored')::]
             player_list += '> * ' + text[text.index('>') + 1:text.index('<'):] + '\n'
-    else:
+    elif '<div class="hidden" id="players-list">' in text:
         text = text[text.index('<div class="hidden" id="players-list">')::]
         text = text[text.index('<span>')::]
         text = text[:text.index('</pre>'):]
