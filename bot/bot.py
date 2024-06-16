@@ -136,7 +136,7 @@ def get_name_between_spans(string):
     return string
 
 def server_command(cmd):
-    output = subprocess.run('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd), shell=True, capture_output=True, text=True).stdout
+    output = os.popen('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd)).read()
     return output
     # os.system('screen -S minecraft-server-screen -X stuff "{}\n"'.format(cmd))
 
